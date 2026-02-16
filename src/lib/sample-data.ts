@@ -91,7 +91,7 @@ export const sampleProducts: Product[] = [
     ],
     occasions: ["birthday", "congratulations", "housewarming"],
     is_available: true,
-    is_featured: true,
+    is_featured: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -127,7 +127,7 @@ export const sampleProducts: Product[] = [
     ],
     occasions: ["birthday", "graduation", "congratulations"],
     is_available: true,
-    is_featured: true,
+    is_featured: false,
     created_at: new Date().toISOString(),
   },
 ];

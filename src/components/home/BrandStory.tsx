@@ -10,21 +10,21 @@ const stories = [
     title: "The Meaning",
     quote: "Florette",
     body: `"Florette" means a small flower — delicate, yet with the potential to grow. It represents our belief that beauty starts small and blossoms into something extraordinary.`,
-    image: "/brand/the-meaning.jpg",
+    image: "/brand/the-meaning.png",
   },
   {
     number: "02",
     title: "The Seed",
     quote: "The Beginning",
     body: `Grace's Florette started with an idea from my husband — to turn my love for flowers into learning and arranging them. What began as a spark of inspiration grew into a passion I carry with me every day.`,
-    image: "/brand/the-seed.jpg",
+    image: "/brand/the-seed.png",
   },
   {
     number: "03",
     title: "The Blooms",
     quote: "Every Bouquet Tells a Story",
     body: `It never ceases to amaze me how each person is unique and every bouquet made will never be the same. I hope to celebrate life's special moments with you — one bloom at a time.`,
-    image: "/brand/the-bloom.jpg",
+    image: "/brand/the-bloom.png",
   },
 ];
 
