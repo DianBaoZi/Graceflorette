@@ -188,14 +188,14 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 overflow-hidden transition-all duration-500 ${
           scrolled
-            ? "bg-cream/90 backdrop-blur-md shadow-[0_1px_0_0_rgba(201,162,167,0.15)]"
-            : "bg-transparent"
+            ? "bg-cream/95 backdrop-blur-md shadow-[0_1px_0_0_rgba(201,162,167,0.15)]"
+            : "bg-cream"
         }`}
       >
         <nav className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="flex items-center justify-between h-28 lg:h-32">
+          <div className="flex items-center justify-between h-18 sm:h-24 lg:h-32">
             {/* Logo */}
             <Link
               href="/"
@@ -206,7 +206,7 @@ export default function Navbar() {
                 alt="Grace's Florette"
                 width={320}
                 height={320}
-                className="h-24 lg:h-28 w-auto"
+                className="h-14 sm:h-20 lg:h-28 w-auto"
                 priority
               />
             </Link>
@@ -327,7 +327,7 @@ export default function Navbar() {
       </AnimatePresence>
 
       {/* Spacer for fixed navbar */}
-      <div className="h-28 lg:h-32" />
+      <div className="h-18 sm:h-24 lg:h-32" />
     </>
   );
 }
