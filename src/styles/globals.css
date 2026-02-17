@@ -42,6 +42,22 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-dark);
 }
 
+/* Hide text cursor/caret on non-editable elements */
+h1, h2, h3, h4, h5, h6, p, span, div, section, article, header, footer, nav, a, button, li, ul {
+  caret-color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection on paragraphs and specific content if needed */
+p, article, .selectable {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+  caret-color: transparent;
+}
+
 /* ── Grain texture overlay ────────────────────────── */
 
 body::before {

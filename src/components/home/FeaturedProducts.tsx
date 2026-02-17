@@ -13,10 +13,14 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay: index * 0.08 }}
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{
+        duration: 0.7,
+        delay: index * 0.12,
+        ease: [0.25, 0.4, 0.25, 1],
+      }}
     >
       <motion.div
         whileHover={{ y: -4 }}
@@ -45,10 +49,16 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             Add to Cart &mdash; ${product.sizes[0].price}
           </motion.button>
 
-          {/* Featured badge */}
-          {product.is_featured && (
-            <div className="absolute top-3 left-3 px-2.5 py-1 bg-cream/90 backdrop-blur-sm text-[10px] tracking-wider uppercase text-warm-gray rounded-full">
-              Featured
+          {/* Bestseller badge - show on first item */}
+          {index === 0 && (
+            <div className="absolute top-3 left-3 px-2.5 py-1 bg-primary-dark text-cream text-[10px] tracking-wider uppercase font-medium rounded-full">
+              ★ Bestseller
+            </div>
+          )}
+          {/* Popular badge - show on second item */}
+          {index === 1 && (
+            <div className="absolute top-3 left-3 px-2.5 py-1 bg-secondary-dark text-cream text-[10px] tracking-wider uppercase font-medium rounded-full">
+              Popular
             </div>
           )}
         </div>

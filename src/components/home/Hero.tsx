@@ -173,7 +173,7 @@ export default function Hero() {
             href="/shop"
             className="group relative inline-flex items-center gap-2 bg-dark text-cream px-8 py-3.5 text-sm tracking-wider uppercase font-medium rounded-full hover:bg-dark/90 transition-all duration-300 overflow-hidden"
           >
-            <span className="relative z-10">Shop Now</span>
+            <span className="relative z-10">Send Flowers Today</span>
             <svg
               viewBox="0 0 16 16"
               fill="none"
@@ -198,12 +198,37 @@ export default function Hero() {
           </Link>
         </motion.div>
 
+        {/* Trust badges */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+          className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs text-warm-gray-light"
+        >
+          <div className="flex items-center gap-1.5">
+            <span className="text-amber-500">★★★★★</span>
+            <span>5.0 Rating</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <svg className="w-4 h-4 text-primary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span>Made with Love</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <svg className="w-4 h-4 text-secondary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Fresh Blooms</span>
+          </div>
+        </motion.div>
+
         {/* Signature */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.4 }}
-          className="mt-14 text-xs text-warm-gray-light/60 italic font-heading"
+          className="mt-8 text-xs text-warm-gray-light/60 italic font-heading"
         >
           Love, Grace
         </motion.p>

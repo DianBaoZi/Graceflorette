@@ -24,7 +24,7 @@ export default function InstagramFeed() {
   return (
     <section className="py-20 sm:py-28 bg-gradient-to-b from-transparent via-primary/[0.04] to-transparent">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
-        <AnimatedSection className="text-center">
+        <AnimatedSection className="text-center" variant="scale">
           <p className="editorial-spacing text-warm-gray-light mb-3">
             Follow along
           </p>

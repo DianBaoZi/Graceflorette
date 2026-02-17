@@ -66,7 +66,7 @@ export default function BrandStory() {
 
       <div className="max-w-5xl mx-auto px-6 lg:px-10">
         {/* Section header */}
-        <AnimatedSection>
+        <AnimatedSection variant="blur">
           <div className="text-center mb-16 sm:mb-20">
             <p className="editorial-spacing text-warm-gray-light mb-3">
               Our Story
@@ -122,7 +122,7 @@ export default function BrandStory() {
         </div>
 
         {/* Sign-off */}
-        <AnimatedSection delay={0.4}>
+        <AnimatedSection delay={0.2} variant="scale">
           <div className="text-center mt-16 sm:mt-20">
             <div className="w-16 h-[1px] bg-primary-dark/20 mx-auto mb-6" />
             <p className="font-heading text-lg italic text-warm-gray-light">

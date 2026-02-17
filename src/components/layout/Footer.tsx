@@ -30,10 +30,6 @@ function FooterFloral() {
   );
 }
 
-const shopLinks = [
-  { href: "/shop", label: "All Flowers" },
-];
-
 const companyLinks = [
   { href: "/contact", label: "Contact" },
   { href: "https://www.instagram.com/gracesflorette", label: "Instagram", external: true },
@@ -50,14 +46,14 @@ export default function Footer() {
   return (
     <footer className="bg-dark text-cream/70">
       {/* Top ornament */}
-      <div className="flex justify-center pt-12 pb-8 text-cream/30">
+      <div className="flex justify-center pt-6 pb-4 text-cream/30">
         <FooterFloral />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Brand column */}
-          <div className="lg:col-span-1">
+          <div>
             <h3 className="font-heading text-xl text-cream mb-3">
               Grace&apos;s Florette
             </h3>
@@ -71,27 +67,10 @@ export default function Footer() {
             <p className="text-xs mt-1 text-cream/40">Love, Grace</p>
           </div>
 
-          {/* Shop links */}
-          <div>
-            <h4 className="editorial-spacing text-cream/50 mb-4">Shop</h4>
-            <ul className="space-y-2.5">
-              {shopLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm hover:text-primary transition-colors duration-300"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* Company links */}
           <div>
-            <h4 className="editorial-spacing text-cream/50 mb-4">Company</h4>
-            <ul className="space-y-2.5">
+            <h4 className="editorial-spacing text-cream/50 mb-2">Company</h4>
+            <ul className="space-y-1.5">
               {companyLinks.map((link) => (
                 <li key={link.href}>
                   {"external" in link ? (
@@ -127,8 +106,8 @@ export default function Footer() {
 
           {/* Legal links */}
           <div>
-            <h4 className="editorial-spacing text-cream/50 mb-4">Legal</h4>
-            <ul className="space-y-2.5">
+            <h4 className="editorial-spacing text-cream/50 mb-2">Legal</h4>
+            <ul className="space-y-1.5">
               {legalLinks.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -144,7 +123,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-6 border-t border-cream/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="mt-6 pt-4 border-t border-cream/10 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-cream/30">
             &copy; {new Date().getFullYear()} Grace&apos;s Florette. All rights
             reserved.

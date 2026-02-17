@@ -195,11 +195,11 @@ export default function Navbar() {
         }`}
       >
         <nav className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="flex items-center justify-between h-18 sm:h-24 lg:h-32">
+          <div className="relative flex items-center justify-between h-18 sm:h-24 lg:h-32">
             {/* Logo */}
             <Link
               href="/"
-              className="block hover:opacity-80 transition-opacity"
+              className="block hover:opacity-80 transition-opacity flex-shrink-0"
             >
               <Image
                 src="/logo.png"
@@ -211,22 +211,45 @@ export default function Navbar() {
               />
             </Link>
 
-            {/* Desktop nav links */}
-            <div className="hidden md:flex items-center gap-10">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="relative text-sm tracking-wide text-warm-gray hover:text-dark transition-colors duration-300 group py-1"
-                >
-                  {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary-dark group-hover:w-full transition-all duration-300" />
-                </Link>
+            {/* Desktop nav links - absolutely centered */}
+            <div className="hidden md:flex items-center absolute left-1/2 -translate-x-1/2">
+              {navLinks.map((link, index) => (
+                <div key={link.href} className="flex items-center">
+                  <motion.div whileHover="hover" initial="initial">
+                    <Link
+                      href={link.href}
+                      className="relative px-5 py-2 text-xs uppercase tracking-[0.2em] text-warm-gray hover:text-dark transition-colors duration-300 block outline-none focus:outline-none"
+                    >
+                      <motion.span
+                        className="relative z-10 block"
+                        variants={{
+                          initial: { y: 0 },
+                          hover: { y: -2 },
+                        }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                      >
+                        {link.label}
+                      </motion.span>
+                      <motion.span
+                        className="absolute inset-x-3 bottom-1 h-[1px] bg-primary-dark/70"
+                        variants={{
+                          initial: { scaleX: 0, opacity: 0 },
+                          hover: { scaleX: 1, opacity: 1 },
+                        }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        style={{ originX: 0.5 }}
+                      />
+                    </Link>
+                  </motion.div>
+                  {index < navLinks.length - 1 && (
+                    <span className="text-primary/30 text-sm select-none mx-1">·</span>
+                  )}
+                </div>
               ))}
             </div>
 
             {/* Right side: cart + mobile menu */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-shrink-0">
               <button
                 onClick={toggleCart}
                 className="relative text-warm-gray hover:text-dark transition-colors p-1"
@@ -294,20 +317,23 @@ export default function Navbar() {
                 </button>
               </div>
 
-              <nav className="flex flex-col px-8 pt-4 gap-1">
+              <nav className="flex flex-col px-8 pt-8 gap-0">
                 {navLinks.map((link, i) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + i * 0.05 }}
+                    transition={{ delay: 0.1 + i * 0.08 }}
                   >
                     <Link
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="block py-3 text-lg font-heading text-dark hover:text-primary-dark transition-colors border-b border-primary/30"
+                      className="group flex items-center gap-4 py-4 border-b border-primary/20 outline-none focus:outline-none"
                     >
-                      {link.label}
+                      <span className="text-xs text-primary-dark/50 font-light">0{i + 1}</span>
+                      <span className="text-sm uppercase tracking-[0.15em] text-dark group-hover:text-primary-dark transition-colors duration-300">
+                        {link.label}
+                      </span>
                     </Link>
                   </motion.div>
                 ))}

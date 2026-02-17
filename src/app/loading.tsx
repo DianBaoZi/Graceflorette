@@ -22,20 +22,17 @@ export default function Loading() {
         />
       </motion.div>
 
-      {/* Logo with breathing animation */}
+      {/* Logo with pulse animation */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.92 }}
+        initial={{ opacity: 0, scale: 0.9 }}
         animate={{
-          opacity: [0, 1, 1, 1],
-          scale: [0.92, 1, 1.02, 1],
+          opacity: [0.4, 1, 0.4],
+          scale: [0.95, 1, 0.95],
         }}
         transition={{
-          duration: 2.4,
-          times: [0, 0.3, 0.65, 1],
+          duration: 1.5,
           ease: "easeInOut",
           repeat: Infinity,
-          repeatType: "mirror",
-          repeatDelay: 0.2,
         }}
         className="relative"
       >
