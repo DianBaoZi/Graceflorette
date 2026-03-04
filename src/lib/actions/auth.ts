@@ -40,7 +40,7 @@ export async function login(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/Grace-admin");
+  return { success: true };
 }
 
 export async function logout() {

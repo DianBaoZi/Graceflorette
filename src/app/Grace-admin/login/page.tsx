@@ -3,8 +3,10 @@
 import { login } from "@/lib/actions/auth";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -15,7 +17,11 @@ export default function LoginPage() {
     try {
       const formData = new FormData(e.currentTarget);
       const result = await login(formData);
-      if (result?.error) setError(result.error);
+      if (result?.error) {
+        setError(result.error);
+      } else if (result?.success) {
+        router.push("/Grace-admin");
+      }
     } catch {
       setError("An unexpected error occurred");
     } finally {

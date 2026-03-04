@@ -6,20 +6,19 @@ import type { Product } from "@/lib/types";
 export const revalidate = 300; // Revalidate every 5 minutes
 
 async function getProduct(slug: string): Promise<Product | null> {
-  const supabase = await createServerClient();
-
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("slug", slug)
-    .eq("is_available", true)
-    .single();
-
-  if (error || !data) {
+  try {
+    const supabase = await createServerClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("slug", slug)
+      .eq("is_available", true)
+      .single();
+    if (error || !data) return null;
+    return data;
+  } catch {
     return null;
   }
-
-  return data;
 }
 
 export default async function ProductDetailPage({
