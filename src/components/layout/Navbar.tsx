@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCart } from "@/context/CartContext";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -163,7 +162,6 @@ function CloseIcon() {
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { toggleCart, totalItems } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -195,11 +193,11 @@ export default function Navbar() {
         }`}
       >
         <nav className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="relative flex items-center justify-between h-18 sm:h-24 lg:h-32">
+          <div className="flex items-center justify-between h-18 sm:h-24 lg:h-32">
             {/* Logo */}
             <Link
               href="/"
-              className="block hover:opacity-80 transition-opacity flex-shrink-0"
+              className="block hover:opacity-80 transition-opacity"
             >
               <Image
                 src="/logo.png"
@@ -211,65 +209,22 @@ export default function Navbar() {
               />
             </Link>
 
-            {/* Desktop nav links - absolutely centered */}
-            <div className="hidden md:flex items-center absolute left-1/2 -translate-x-1/2">
-              {navLinks.map((link, index) => (
-                <div key={link.href} className="flex items-center">
-                  <motion.div whileHover="hover" initial="initial">
-                    <Link
-                      href={link.href}
-                      className="relative px-5 py-2 text-xs uppercase tracking-[0.2em] text-warm-gray hover:text-dark transition-colors duration-300 block outline-none focus:outline-none"
-                    >
-                      <motion.span
-                        className="relative z-10 block"
-                        variants={{
-                          initial: { y: 0 },
-                          hover: { y: -2 },
-                        }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                      >
-                        {link.label}
-                      </motion.span>
-                      <motion.span
-                        className="absolute inset-x-3 bottom-1 h-[1px] bg-primary-dark/70"
-                        variants={{
-                          initial: { scaleX: 0, opacity: 0 },
-                          hover: { scaleX: 1, opacity: 1 },
-                        }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                        style={{ originX: 0.5 }}
-                      />
-                    </Link>
-                  </motion.div>
-                  {index < navLinks.length - 1 && (
-                    <span className="text-primary/30 text-sm select-none mx-1">·</span>
-                  )}
-                </div>
+            {/* Desktop nav links */}
+            <div className="hidden md:flex items-center gap-10">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="relative text-sm tracking-wide text-warm-gray hover:text-dark transition-colors duration-300 group py-1"
+                >
+                  {link.label}
+                  <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary-dark group-hover:w-full transition-all duration-300" />
+                </Link>
               ))}
             </div>
 
-            {/* Right side: cart + mobile menu */}
-            <div className="flex items-center gap-4 flex-shrink-0">
-              <button
-                onClick={toggleCart}
-                className="relative text-warm-gray hover:text-dark transition-colors p-1"
-                aria-label="Open cart"
-              >
-                <CartIcon />
-                <AnimatePresence>
-                  {totalItems > 0 && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      className="absolute -top-1.5 -right-1.5 bg-primary-dark text-white text-[10px] font-medium w-4.5 h-4.5 rounded-full flex items-center justify-center"
-                    >
-                      {totalItems}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
-
+            {/* Right side: mobile menu */}
+            <div className="flex items-center gap-4">
               {/* Mobile hamburger */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
@@ -317,23 +272,20 @@ export default function Navbar() {
                 </button>
               </div>
 
-              <nav className="flex flex-col px-8 pt-8 gap-0">
+              <nav className="flex flex-col px-8 pt-4 gap-1">
                 {navLinks.map((link, i) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + i * 0.08 }}
+                    transition={{ delay: 0.1 + i * 0.05 }}
                   >
                     <Link
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="group flex items-center gap-4 py-4 border-b border-primary/20 outline-none focus:outline-none"
+                      className="block py-3 text-lg font-heading text-dark hover:text-primary-dark transition-colors border-b border-primary/30"
                     >
-                      <span className="text-xs text-primary-dark/50 font-light">0{i + 1}</span>
-                      <span className="text-sm uppercase tracking-[0.15em] text-dark group-hover:text-primary-dark transition-colors duration-300">
-                        {link.label}
-                      </span>
+                      {link.label}
                     </Link>
                   </motion.div>
                 ))}

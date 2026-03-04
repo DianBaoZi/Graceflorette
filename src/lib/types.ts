@@ -8,11 +8,6 @@ export interface Category {
   created_at: string;
 }
 
-export interface ProductSize {
-  name: string;
-  price: number;
-}
-
 export interface Product {
   id: string;
   name: string;
@@ -22,27 +17,19 @@ export interface Product {
   category_id: string | null;
   category?: Category;
   images: string[];
-  sizes: ProductSize[];
-  occasions: string[];
   is_available: boolean;
   is_featured: boolean;
+  tags: string[];
   created_at: string;
 }
 
-export interface CartItem {
-  product: Product;
-  quantity: number;
-  selectedSize: ProductSize;
-}
-
-export interface Order {
+export interface HomepageSection {
   id: string;
-  customer_name: string;
-  customer_email: string;
-  customer_phone: string;
-  items: CartItem[];
-  total: number;
-  status: string;
-  notes: string | null;
+  name: string;
+  title: string;
+  description: string | null;
+  is_enabled: boolean;
+  display_order: number;
   created_at: string;
+  updated_at: string;
 }
