@@ -22,13 +22,15 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           className="group bg-white rounded-2xl overflow-hidden border border-primary/15 hover:border-primary-dark/25 hover:shadow-[0_16px_48px_-16px_rgba(201,162,167,0.22)] transition-all duration-500"
         >
           <div className="relative aspect-[4/5] overflow-hidden bg-cream">
-            <Image
-              src={product.images[0]}
-              alt={product.name}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700"
-              sizes="(max-width: 768px) 50vw, 25vw"
-            />
+            {product.images?.[0] && (
+              <Image
+                src={product.images[0]}
+                alt={product.name}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 768px) 50vw, 25vw"
+              />
+            )}
           </div>
 
           <div className="p-5">
