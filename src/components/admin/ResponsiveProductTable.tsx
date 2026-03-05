@@ -84,7 +84,7 @@ export default function ResponsiveProductTable({ products: initialProducts, sect
     setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, tags: newTags } : p))
     );
-    const result = await toggleTag(id, tagId, hasTag);
+    const result = await toggleTag(id, tagId, currentTags);
     if (result?.error) {
       setProducts((prev) =>
         prev.map((p) => (p.id === id ? { ...p, tags: currentTags } : p))
