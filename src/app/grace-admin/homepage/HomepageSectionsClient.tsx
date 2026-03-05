@@ -20,10 +20,15 @@ export default function HomepageSectionsClient({ sections }: HomepageSectionsCli
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleToggle = async (id: string, currentValue: boolean) => {
     setLoading(id);
-    await toggleSectionEnabled(id, !currentValue);
+    setError(null);
+    const result = await toggleSectionEnabled(id, !currentValue);
+    if (result?.error) {
+      setError(result.error);
+    }
     setLoading(null);
   };
 
@@ -42,13 +47,24 @@ export default function HomepageSectionsClient({ sections }: HomepageSectionsCli
   const handleSave = async (id: string) => {
     if (!editTitle.trim()) return;
     setSaving(true);
-    await updateSectionTitle(id, editTitle.trim(), editDesc.trim());
+    setError(null);
+    const result = await updateSectionTitle(id, editTitle.trim(), editDesc.trim());
+    if (result?.error) {
+      setError(result.error);
+      setSaving(false);
+      return;
+    }
     setSaving(false);
     setEditingId(null);
   };
 
   return (
     <div className="space-y-4">
+      {error && (
+        <div className="px-4 py-3 rounded-xl text-sm" style={{ background: "#FEF2F2", color: "#B91C1C", border: "1px solid #FECACA" }}>
+          {error}
+        </div>
+      )}
       {sections.map((section) => {
         const cfg = configs[section.id] ?? { icon: "🎁", accent: "#6B6462", bg: "#F5F5F5" };
         const isOn = section.is_enabled;

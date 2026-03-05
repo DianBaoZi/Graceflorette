@@ -5,7 +5,7 @@ import InstagramFeed from "@/components/home/InstagramFeed";
 import { createServerClient } from "@/lib/supabase-server";
 import type { Product, HomepageSection } from "@/lib/types";
 
-export const dynamic = "force-dynamic"; // Always fetch fresh data
+export const revalidate = 60; // ISR: cache 60s, mutations call revalidatePath("/")
 
 async function getHomepageSectionsWithProducts() {
   try {
