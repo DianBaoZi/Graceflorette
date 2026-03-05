@@ -83,7 +83,7 @@ export default function HomepageSectionsClient({ sections }: HomepageSectionsCli
             {isOn && (
               <div className="h-1 w-full" style={{ background: cfg.accent }} />
             )}
-            <div className="p-6 flex items-start gap-4">
+            <div className="p-4 sm:p-6 flex items-start gap-3 sm:gap-4">
               {/* Content */}
               <div className="flex-1 min-w-0">
                 {isEditing ? (
@@ -93,7 +93,7 @@ export default function HomepageSectionsClient({ sections }: HomepageSectionsCli
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
                       placeholder="Section title"
-                      className="w-full text-sm px-3 py-1.5 rounded-lg outline-none"
+                      className="w-full text-sm px-3 py-2 rounded-lg outline-none"
                       style={{
                         border: `1.5px solid ${cfg.accent}`,
                         color: "#2C2826",
@@ -106,7 +106,7 @@ export default function HomepageSectionsClient({ sections }: HomepageSectionsCli
                       value={editDesc}
                       onChange={(e) => setEditDesc(e.target.value)}
                       placeholder="Description (optional)"
-                      className="w-full text-sm px-3 py-1.5 rounded-lg outline-none"
+                      className="w-full text-sm px-3 py-2 rounded-lg outline-none"
                       style={{
                         border: "1.5px solid #F2D7D9",
                         color: "#6B6462",
@@ -117,7 +117,7 @@ export default function HomepageSectionsClient({ sections }: HomepageSectionsCli
                       <button
                         onClick={() => handleSave(section.id)}
                         disabled={saving || !editTitle.trim()}
-                        className="px-3 py-1 rounded-lg text-xs font-semibold text-white transition-all disabled:opacity-50"
+                        className="px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all active:scale-95 disabled:opacity-50"
                         style={{ background: cfg.accent }}
                       >
                         {saving ? "Saving…" : "Save"}
@@ -125,7 +125,7 @@ export default function HomepageSectionsClient({ sections }: HomepageSectionsCli
                       <button
                         onClick={cancelEdit}
                         disabled={saving}
-                        className="px-3 py-1 rounded-lg text-xs font-medium transition-all hover:opacity-70"
+                        className="px-4 py-2 rounded-lg text-xs font-medium transition-all active:scale-95 hover:opacity-70"
                         style={{ background: "#F5F5F5", color: "#6B6462" }}
                       >
                         Cancel
@@ -134,20 +134,20 @@ export default function HomepageSectionsClient({ sections }: HomepageSectionsCli
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center gap-2.5 mb-1">
-                      <h3 className="font-heading text-lg" style={{ color: "#2C2826" }}>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-1">
+                      <h3 className="font-heading text-base sm:text-lg" style={{ color: "#2C2826" }}>
                         {section.title}
                       </h3>
                       {isOn && (
                         <span
-                          className="text-xs px-2.5 py-0.5 rounded-full font-medium"
+                          className="text-xs px-2 sm:px-2.5 py-0.5 rounded-full font-medium"
                           style={{ background: "#DCFCE7", color: "#166534" }}
                         >
                           Active
                         </span>
                       )}
                     </div>
-                    <p className="text-sm" style={{ color: "#9B9593" }}>{section.description}</p>
+                    <p className="text-xs sm:text-sm" style={{ color: "#9B9593" }}>{section.description}</p>
                   </>
                 )}
               </div>
@@ -157,38 +157,38 @@ export default function HomepageSectionsClient({ sections }: HomepageSectionsCli
                 <div className="flex items-center gap-2 shrink-0 mt-0.5">
                   <button
                     onClick={() => startEdit(section)}
-                    className="p-1.5 rounded-lg transition-all hover:opacity-70"
+                    className="p-2 sm:p-1.5 rounded-lg transition-all active:scale-95 hover:opacity-70"
                     style={{ background: "rgba(0,0,0,0.05)", color: "#9B9593" }}
                     title="Edit title"
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </button>
-                <button
-                  onClick={() => handleToggle(section.id, isOn)}
-                  disabled={loading === section.id}
-                  className="relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none shrink-0 disabled:opacity-50"
-                  style={{ background: isOn ? "#22C55E" : "#D1D5DB" }}
-                  aria-label={isOn ? "Disable section" : "Enable section"}
-                >
-                  {loading === section.id ? (
-                    <span className="absolute inset-0 flex items-center justify-center">
-                      <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                    </span>
-                  ) : (
-                    <span
-                      className="inline-block h-5 w-5 transform rounded-full bg-white transition-transform"
-                      style={{
-                        transform: isOn ? "translateX(26px)" : "translateX(4px)",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-                      }}
-                    />
-                  )}
-                </button>
+                  <button
+                    onClick={() => handleToggle(section.id, isOn)}
+                    disabled={loading === section.id}
+                    className="relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none shrink-0 disabled:opacity-50 active:scale-95"
+                    style={{ background: isOn ? "#22C55E" : "#D1D5DB" }}
+                    aria-label={isOn ? "Disable section" : "Enable section"}
+                  >
+                    {loading === section.id ? (
+                      <span className="absolute inset-0 flex items-center justify-center">
+                        <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                      </span>
+                    ) : (
+                      <span
+                        className="inline-block h-5 w-5 transform rounded-full bg-white transition-transform"
+                        style={{
+                          transform: isOn ? "translateX(26px)" : "translateX(4px)",
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                        }}
+                      />
+                    )}
+                  </button>
                 </div>
               )}
             </div>
