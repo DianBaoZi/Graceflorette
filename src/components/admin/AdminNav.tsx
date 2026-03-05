@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logout } from "@/lib/actions/auth";
@@ -11,7 +11,7 @@ const navItems = [
     name: "Homepage",
     href: "/grace-admin/homepage",
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
       </svg>
     ),
@@ -20,7 +20,7 @@ const navItems = [
     name: "Products",
     href: "/grace-admin/products",
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
     ),
@@ -29,14 +29,19 @@ const navItems = [
     name: "Categories",
     href: "/grace-admin/categories",
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
       </svg>
     ),
   },
 ];
 
-export default function AdminNav() {
+interface AdminNavProps {
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
+}
+
+export default function AdminNav({ mobileMenuOpen, setMobileMenuOpen }: AdminNavProps) {
   const pathname = usePathname();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -46,10 +51,29 @@ export default function AdminNav() {
     await logout();
   };
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname, setMobileMenuOpen]);
+
   return (
     <>
+      {/* Mobile backdrop */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-dark/60 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Desktop sidebar */}
       <aside
-        className="w-52 flex flex-col h-screen sticky top-0 shrink-0"
+        className={`
+          fixed lg:sticky top-0 h-screen z-50
+          w-64 lg:w-52 flex flex-col shrink-0
+          transition-transform duration-300 ease-out
+          ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
         style={{
           background: "linear-gradient(180deg, #2C2826 0%, #1E1A18 100%)",
           borderRight: "1px solid rgba(242,215,217,0.07)",
@@ -57,12 +81,22 @@ export default function AdminNav() {
       >
         {/* Logo */}
         <div
-          className="px-4 py-5 flex flex-col items-center gap-2"
+          className="px-4 py-4 lg:py-5 flex items-center lg:flex-col gap-3 lg:gap-2"
           style={{ borderBottom: "1px solid rgba(242,215,217,0.08)" }}
         >
-          <Link href="/grace-admin" className="flex flex-col items-center gap-3">
+          {/* Close button on mobile */}
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="lg:hidden p-2 -ml-2 text-cream/50 hover:text-cream"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <Link href="/grace-admin" className="flex lg:flex-col items-center gap-3 flex-1 lg:flex-none">
             <div
-              className="relative w-12 h-12 rounded-full overflow-hidden"
+              className="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shrink-0"
               style={{ border: "1.5px solid rgba(242,215,217,0.18)" }}
             >
               <Image
@@ -72,9 +106,9 @@ export default function AdminNav() {
                 className="object-contain"
               />
             </div>
-            <div className="text-center">
+            <div className="text-left lg:text-center">
               <h1
-                className="font-heading text-sm leading-tight"
+                className="font-heading text-base lg:text-sm leading-tight"
                 style={{ color: "#FDF8F4", letterSpacing: "0.03em" }}
               >
                 Grace's Florette
@@ -90,9 +124,9 @@ export default function AdminNav() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-5 space-y-0.5">
+        <nav className="flex-1 px-3 py-4 lg:py-5 space-y-1 overflow-y-auto">
           <p
-            className="text-xs px-3 mb-3 uppercase tracking-widest"
+            className="text-xs px-3 mb-2 lg:mb-3 uppercase tracking-widest"
             style={{ color: "rgba(155,149,147,0.4)", fontSize: "0.6rem" }}
           >
             Menu
@@ -103,7 +137,8 @@ export default function AdminNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 relative group"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-lg transition-all duration-200 relative group active:scale-[0.98]"
                 style={
                   isActive
                     ? { background: "rgba(242,215,217,0.1)", color: "#FDF8F4" }
@@ -112,7 +147,7 @@ export default function AdminNav() {
               >
                 {isActive && (
                   <span
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 lg:w-0.5 h-8 lg:h-5 rounded-r-full"
                     style={{ background: "#C9A2A7" }}
                   />
                 )}
@@ -127,7 +162,7 @@ export default function AdminNav() {
                   {item.icon}
                 </span>
                 <span
-                  className="text-sm font-medium"
+                  className="text-base lg:text-sm font-medium"
                   style={{ letterSpacing: "0.01em" }}
                 >
                   {item.name}
@@ -139,12 +174,12 @@ export default function AdminNav() {
 
         {/* Sign Out */}
         <div
-          className="px-3 pb-5 pt-4"
+          className="px-3 pb-4 lg:pb-5 pt-3 lg:pt-4"
           style={{ borderTop: "1px solid rgba(242,215,217,0.07)" }}
         >
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-left"
+            className="w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-lg transition-all duration-200 text-left active:scale-[0.98]"
             style={{ color: "rgba(253,248,244,0.3)" }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "rgba(239,68,68,0.07)";
@@ -155,10 +190,10 @@ export default function AdminNav() {
               e.currentTarget.style.color = "rgba(253,248,244,0.3)";
             }}
           >
-            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 lg:w-4 lg:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            <span className="text-sm font-medium">Sign Out</span>
+            <span className="text-base lg:text-sm font-medium">Sign Out</span>
           </button>
         </div>
       </aside>
