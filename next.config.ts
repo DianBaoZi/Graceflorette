@@ -45,23 +45,6 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  async redirects() {
-    return [
-      // Bare /grace-admin with no trailing path
-      {
-        source: "/grace-admin",
-        destination: "/Grace-admin",
-        permanent: false,
-      },
-      // /grace-admin/anything
-      {
-        source: "/grace-admin/:path*",
-        destination: "/Grace-admin/:path*",
-        permanent: false,
-      },
-    ];
-  },
-
   async headers() {
     return [
       {
