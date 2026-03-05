@@ -20,7 +20,7 @@ export default function LoginPage() {
       if (result?.error) {
         setError(result.error);
       } else if (result?.success) {
-        router.push("/Grace-admin");
+        router.push("/grace-admin");
       }
     } catch {
       setError("An unexpected error occurred");

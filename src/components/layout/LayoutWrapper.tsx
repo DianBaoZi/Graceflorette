@@ -10,7 +10,7 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAdminRoute = pathname?.startsWith("/Grace-admin");
+  const isAdminRoute = pathname?.startsWith("/grace-admin");
 
   if (isAdminRoute) {
     // Admin routes don't need the main site navigation

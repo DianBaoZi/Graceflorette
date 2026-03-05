@@ -17,7 +17,7 @@ export default async function CategoriesPage() {
             </p>
           </div>
           <Link
-            href="/Grace-admin/categories/new"
+            href="/grace-admin/categories/new"
             className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-[#d4a5a5] via-primary-dark to-[#c89097] text-white px-6 py-3.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:shadow-primary-dark/30 hover:scale-105 active:scale-95 transition-all duration-300 overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-2">

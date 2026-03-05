@@ -76,9 +76,9 @@ export async function createCategory(formData: FormData) {
     return { error: "Failed to create category. Please try again." };
   }
 
-  revalidatePath("/Grace-admin/categories");
+  revalidatePath("/grace-admin/categories");
   revalidatePath("/shop");
-  redirect("/Grace-admin/categories");
+  redirect("/grace-admin/categories");
 }
 
 export async function updateCategory(id: string, formData: FormData) {
@@ -136,9 +136,9 @@ export async function updateCategory(id: string, formData: FormData) {
     return { error: "Failed to update category. Please try again." };
   }
 
-  revalidatePath("/Grace-admin/categories");
+  revalidatePath("/grace-admin/categories");
   revalidatePath("/shop");
-  redirect("/Grace-admin/categories");
+  redirect("/grace-admin/categories");
 }
 
 export async function deleteCategory(id: string) {
@@ -168,7 +168,7 @@ export async function deleteCategory(id: string) {
     return { error: "Failed to delete category. Please try again." };
   }
 
-  revalidatePath("/Grace-admin/categories");
+  revalidatePath("/grace-admin/categories");
   revalidatePath("/shop");
   return { success: true };
 }

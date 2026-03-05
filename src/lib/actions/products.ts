@@ -92,10 +92,10 @@ export async function createProduct(formData: FormData) {
     return { error: "Failed to create product. Please try again." };
   }
 
-  revalidatePath("/Grace-admin/products");
+  revalidatePath("/grace-admin/products");
   revalidatePath("/shop");
   revalidatePath("/");
-  redirect("/Grace-admin/products");
+  redirect("/grace-admin/products");
 }
 
 export async function updateProduct(id: string, formData: FormData) {
@@ -167,10 +167,10 @@ export async function updateProduct(id: string, formData: FormData) {
     return { error: "Failed to update product. Please try again." };
   }
 
-  revalidatePath("/Grace-admin/products");
+  revalidatePath("/grace-admin/products");
   revalidatePath("/shop");
   revalidatePath("/");
-  redirect("/Grace-admin/products");
+  redirect("/grace-admin/products");
 }
 
 export async function deleteProduct(id: string) {

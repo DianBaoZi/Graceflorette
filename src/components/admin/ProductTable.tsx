@@ -109,7 +109,7 @@ export default function ProductTable({ products: initialProducts, sectionLabels 
         <h3 className="font-heading text-xl mb-2" style={{ color: "#2C2826" }}>No products yet</h3>
         <p className="text-sm mb-7" style={{ color: "#9B9593" }}>Create your first arrangement to get started</p>
         <Link
-          href="/Grace-admin/products/new"
+          href="/grace-admin/products/new"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
           style={{ background: "linear-gradient(135deg, #C9A2A7, #b5828a)" }}
         >
@@ -219,7 +219,7 @@ export default function ProductTable({ products: initialProducts, sectionLabels 
                       </svg>
                     </Link>
                     <Link
-                      href={`/Grace-admin/products/${product.id}`}
+                      href={`/grace-admin/products/${product.id}`}
                       title="Edit"
                       className="p-1.5 rounded-lg transition-all hover:opacity-80"
                       style={{ background: "rgba(242,215,217,0.35)", color: "#C9A2A7" }}

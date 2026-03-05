@@ -35,7 +35,7 @@ export default function EditProductClient({ product, categories }: EditProductCl
   };
 
   const handleCancel = () => {
-    router.push("/Grace-admin/products");
+    router.push("/grace-admin/products");
   };
 
   return (

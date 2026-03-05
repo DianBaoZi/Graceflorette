@@ -47,7 +47,7 @@ export async function logout() {
   const supabase = await createServerClient();
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
-  redirect("/Grace-admin/login");
+  redirect("/grace-admin/login");
 }
 
 export async function getUser() {

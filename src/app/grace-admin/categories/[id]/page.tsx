@@ -12,7 +12,7 @@ export default async function EditCategoryPage({
   const category = await getCategory(id);
 
   if (!category) {
-    redirect("/Grace-admin/categories");
+    redirect("/grace-admin/categories");
   }
 
   return (

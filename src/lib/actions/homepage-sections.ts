@@ -50,7 +50,7 @@ export async function toggleSectionEnabled(id: string, isEnabled: boolean) {
   }
 
   revalidatePath("/");
-  revalidatePath("/Grace-admin/homepage");
+  revalidatePath("/grace-admin/homepage");
   return { success: true };
 }
 
@@ -83,7 +83,7 @@ export async function updateSectionTitle(
   }
 
   revalidatePath("/");
-  revalidatePath("/Grace-admin/homepage");
-  revalidatePath("/Grace-admin/products");
+  revalidatePath("/grace-admin/homepage");
+  revalidatePath("/grace-admin/products");
   return { success: true };
 }

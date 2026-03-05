@@ -43,7 +43,7 @@ export default function CategoryTable({ categories }: CategoryTableProps) {
         <h3 className="font-heading text-xl mb-2" style={{ color: "#2C2826" }}>No categories yet</h3>
         <p className="text-sm mb-7" style={{ color: "#9B9593" }}>Create your first category to organise your products</p>
         <Link
-          href="/Grace-admin/categories/new"
+          href="/grace-admin/categories/new"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
           style={{ background: "linear-gradient(135deg, #C9A2A7, #b5828a)" }}
         >
@@ -108,7 +108,7 @@ export default function CategoryTable({ categories }: CategoryTableProps) {
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-2 justify-end">
                     <Link
-                      href={`/Grace-admin/categories/${category.id}`}
+                      href={`/grace-admin/categories/${category.id}`}
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80"
                       style={{ background: "rgba(242,215,217,0.35)", color: "#C9A2A7" }}
                     >

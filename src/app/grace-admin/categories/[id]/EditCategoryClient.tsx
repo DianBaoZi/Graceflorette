@@ -25,7 +25,7 @@ export default function EditCategoryClient({ category }: EditCategoryClientProps
   };
 
   const handleCancel = () => {
-    router.push("/Grace-admin/categories");
+    router.push("/grace-admin/categories");
   };
 
   return (

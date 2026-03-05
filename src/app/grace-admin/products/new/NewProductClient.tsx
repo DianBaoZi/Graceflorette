@@ -17,7 +17,7 @@ export default function NewProductClient({ categories }: NewProductClientProps) 
   const router = useRouter();
 
   const handleCancel = () => {
-    router.push("/Grace-admin/products");
+    router.push("/grace-admin/products");
   };
 
   return (

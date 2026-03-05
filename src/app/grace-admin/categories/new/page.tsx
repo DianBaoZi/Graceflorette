@@ -9,7 +9,7 @@ export default function NewCategoryPage() {
   const router = useRouter();
 
   const handleCancel = () => {
-    router.push("/Grace-admin/categories");
+    router.push("/grace-admin/categories");
   };
 
   return (

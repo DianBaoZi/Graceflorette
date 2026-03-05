@@ -4,8 +4,8 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function proxy(request: NextRequest) {
   // If Supabase env vars missing, just allow through to login
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    if (request.nextUrl.pathname !== "/Grace-admin/login") {
-      return NextResponse.redirect(new URL("/Grace-admin/login", request.url));
+    if (request.nextUrl.pathname !== "/grace-admin/login") {
+      return NextResponse.redirect(new URL("/grace-admin/login", request.url));
     }
     return NextResponse.next({ request });
   }
@@ -44,7 +44,7 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Allow access to login page without authentication
-  if (request.nextUrl.pathname === "/Grace-admin/login") {
+  if (request.nextUrl.pathname === "/grace-admin/login") {
     if (user) {
       const { data: adminUser } = await supabase
         .from("admin_users")
@@ -53,7 +53,7 @@ export async function proxy(request: NextRequest) {
         .single();
 
       if (adminUser) {
-        return NextResponse.redirect(new URL("/Grace-admin", request.url));
+        return NextResponse.redirect(new URL("/grace-admin", request.url));
       }
     }
     return supabaseResponse;
@@ -61,7 +61,7 @@ export async function proxy(request: NextRequest) {
 
   // For all other admin routes, require authentication
   if (!user) {
-    return NextResponse.redirect(new URL("/Grace-admin/login", request.url));
+    return NextResponse.redirect(new URL("/grace-admin/login", request.url));
   }
 
   // Check if user is in admin_users table
@@ -73,16 +73,16 @@ export async function proxy(request: NextRequest) {
 
   if (!adminUser) {
     await supabase.auth.signOut();
-    return NextResponse.redirect(new URL("/Grace-admin/login", request.url));
+    return NextResponse.redirect(new URL("/grace-admin/login", request.url));
   }
 
   return supabaseResponse;
   } catch {
     // On any auth error, redirect to login rather than crashing
-    return NextResponse.redirect(new URL("/Grace-admin/login", request.url));
+    return NextResponse.redirect(new URL("/grace-admin/login", request.url));
   }
 }
 
 export const config = {
-  matcher: ["/Grace-admin/:path*"],
+  matcher: ["/grace-admin/:path*"],
 };

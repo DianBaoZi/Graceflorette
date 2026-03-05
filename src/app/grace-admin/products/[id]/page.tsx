@@ -17,7 +17,7 @@ export default async function EditProductPage({
   ]);
 
   if (!product) {
-    redirect("/Grace-admin/products");
+    redirect("/grace-admin/products");
   }
 
   return (
