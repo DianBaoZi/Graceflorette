@@ -27,9 +27,22 @@ interface ProductTableProps {
   sectionLabels: Record<string, string>;
 }
 
-export default function ProductTable({ products, sectionLabels }: ProductTableProps) {
+const PAGE_SIZE = 20;
+
+const SECTION_TAGS = [
+  { id: "featured",   color: "#C9A2A7" },
+  { id: "valentine",  color: "#E11D48" },
+  { id: "mothersday", color: "#DB2777" },
+];
+
+export default function ProductTable({ products: initialProducts, sectionLabels }: ProductTableProps) {
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(0);
+
+  const totalPages = Math.ceil(products.length / PAGE_SIZE);
+  const paginated = products.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Are you sure you want to delete "${name}"?\n\nThis cannot be undone.`)) return;
@@ -39,22 +52,51 @@ export default function ProductTable({ products, sectionLabels }: ProductTablePr
     if (result?.error) {
       setError(result.error);
       setDeletingId(null);
+    } else {
+      // Remove from local state immediately
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+      setDeletingId(null);
+      // If we deleted the last item on this page, go back one page
+      setPage((prev) => {
+        const newTotal = Math.ceil((products.length - 1) / PAGE_SIZE);
+        return Math.min(prev, Math.max(0, newTotal - 1));
+      });
     }
   };
 
   const handleToggleAvailable = async (id: string, currentValue: boolean) => {
-    await toggleAvailable(id, !currentValue);
+    const newValue = !currentValue;
+    // Optimistic update
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, is_available: newValue } : p))
+    );
+    const result = await toggleAvailable(id, newValue);
+    if (result?.error) {
+      // Revert on error
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, is_available: currentValue } : p))
+      );
+      setError(result.error);
+    }
   };
 
   const handleToggleTag = async (id: string, tag: string, currentTags: string[]) => {
-    await toggleTag(id, tag, currentTags);
+    const newTags = currentTags.includes(tag)
+      ? currentTags.filter((t) => t !== tag)
+      : [...currentTags, tag];
+    // Optimistic update
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, tags: newTags } : p))
+    );
+    const result = await toggleTag(id, tag, currentTags);
+    if (result?.error) {
+      // Revert on error
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, tags: currentTags } : p))
+      );
+      setError(result.error);
+    }
   };
-
-  const SECTION_TAGS = [
-    { id: "featured",   color: "#C9A2A7" },
-    { id: "valentine",  color: "#E11D48" },
-    { id: "mothersday", color: "#DB2777" },
-  ];
 
   if (products.length === 0) {
     return (
@@ -104,11 +146,11 @@ export default function ProductTable({ products, sectionLabels }: ProductTablePr
             </tr>
           </thead>
           <tbody>
-            {products.map((product, i) => (
+            {paginated.map((product, i) => (
               <tr
                 key={product.id}
                 style={{
-                  borderBottom: i < products.length - 1 ? "1px solid rgba(242,215,217,0.45)" : "none",
+                  borderBottom: i < paginated.length - 1 ? "1px solid rgba(242,215,217,0.45)" : "none",
                   background: "white",
                   transition: "background 0.15s",
                 }}
@@ -211,6 +253,36 @@ export default function ProductTable({ products, sectionLabels }: ProductTablePr
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between px-1">
+          <p className="text-xs" style={{ color: "#9B9593" }}>
+            Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, products.length)} of {products.length} products
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ background: "#F5EDE5", color: "#2C2826" }}
+            >
+              ← Prev
+            </button>
+            <span className="text-xs font-medium" style={{ color: "#6B6462" }}>
+              {page + 1} / {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page >= totalPages - 1}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ background: "#F5EDE5", color: "#2C2826" }}
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

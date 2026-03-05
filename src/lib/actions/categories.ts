@@ -3,6 +3,14 @@
 import { createServerClient } from "@/lib/supabase-server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAdmin } from "@/lib/actions/admin-guard";
+import {
+  sanitizeText,
+  sanitizeOptional,
+  isValidSlug,
+  isValidUUID,
+  isValidDisplayOrder,
+} from "@/lib/validate";
 
 // Helper function to generate slug from name
 function generateSlug(name: string): string {
@@ -13,21 +21,32 @@ function generateSlug(name: string): string {
 }
 
 export async function createCategory(formData: FormData) {
-  const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const imageUrl = formData.get("image_url") as string;
-  const displayOrder = parseInt(formData.get("display_order") as string) || 0;
+  // ── Authorization ──────────────────────────────────────────────────────────
+  const admin = await requireAdmin();
+  if (!admin) return { error: "Unauthorized" };
 
-  let slug = formData.get("slug") as string;
+  // ── Input extraction & sanitization ────────────────────────────────────────
+  const name = sanitizeText(formData.get("name"), 100);
+  const description = sanitizeOptional(formData.get("description"), 500) || null;
+  const imageUrl = sanitizeOptional(formData.get("image_url"), 500) || null;
+  const rawOrder = formData.get("display_order");
 
-  // Auto-generate slug if not provided
-  if (!slug || slug.trim() === "") {
-    slug = generateSlug(name);
+  let slug = sanitizeOptional(formData.get("slug"), 200);
+
+  // ── Validation ──────────────────────────────────────────────────────────────
+  if (!name) return { error: "Category name is required" };
+
+  if (!isValidDisplayOrder(rawOrder)) {
+    return { error: "Display order must be a number between 0 and 9999" };
   }
+  const displayOrder = parseInt(rawOrder as string, 10);
 
-  if (!name) {
-    return { error: "Category name is required" };
-  }
+  // Auto-generate slug if not provided; validate it
+  if (!slug) slug = generateSlug(name);
+  if (!isValidSlug(slug)) return { error: "Slug must be lowercase letters, numbers, and hyphens only" };
+
+  // Validate imageUrl is a relative or Supabase URL if provided
+  if (imageUrl && imageUrl.length > 500) return { error: "Image URL is too long" };
 
   const supabase = await createServerClient();
 
@@ -42,21 +61,19 @@ export async function createCategory(formData: FormData) {
     return { error: "A category with this name already exists. Please use a different name." };
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("categories")
     .insert({
       name,
       slug,
-      description: description || null,
-      image_url: imageUrl || null,
+      description,
+      image_url: imageUrl,
       display_order: displayOrder,
-    })
-    .select()
-    .single();
+    });
 
   if (error) {
     console.error("Create category error:", error);
-    return { error: error.message };
+    return { error: "Failed to create category. Please try again." };
   }
 
   revalidatePath("/Grace-admin/categories");
@@ -65,19 +82,29 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function updateCategory(id: string, formData: FormData) {
-  const name = formData.get("name") as string;
-  const slug = formData.get("slug") as string;
-  const description = formData.get("description") as string;
-  const imageUrl = formData.get("image_url") as string;
-  const displayOrder = parseInt(formData.get("display_order") as string) || 0;
+  // ── Authorization ──────────────────────────────────────────────────────────
+  const admin = await requireAdmin();
+  if (!admin) return { error: "Unauthorized" };
 
-  if (!name) {
-    return { error: "Category name is required" };
-  }
+  // ── Validate ID ─────────────────────────────────────────────────────────────
+  if (!isValidUUID(id)) return { error: "Invalid category ID" };
 
-  if (!slug) {
-    return { error: "Category slug is required" };
+  // ── Input extraction & sanitization ────────────────────────────────────────
+  const name = sanitizeText(formData.get("name"), 100);
+  const slug = sanitizeText(formData.get("slug"), 200);
+  const description = sanitizeOptional(formData.get("description"), 500) || null;
+  const imageUrl = sanitizeOptional(formData.get("image_url"), 500) || null;
+  const rawOrder = formData.get("display_order");
+
+  // ── Validation ──────────────────────────────────────────────────────────────
+  if (!name) return { error: "Category name is required" };
+  if (!slug) return { error: "Category slug is required" };
+  if (!isValidSlug(slug)) return { error: "Slug must be lowercase letters, numbers, and hyphens only" };
+
+  if (!isValidDisplayOrder(rawOrder)) {
+    return { error: "Display order must be a number between 0 and 9999" };
   }
+  const displayOrder = parseInt(rawOrder as string, 10);
 
   const supabase = await createServerClient();
 
@@ -93,22 +120,20 @@ export async function updateCategory(id: string, formData: FormData) {
     return { error: "A category with this name already exists. Please use a different name." };
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("categories")
     .update({
       name,
       slug,
-      description: description || null,
-      image_url: imageUrl || null,
+      description,
+      image_url: imageUrl,
       display_order: displayOrder,
     })
-    .eq("id", id)
-    .select()
-    .single();
+    .eq("id", id);
 
   if (error) {
     console.error("Update category error:", error);
-    return { error: error.message };
+    return { error: "Failed to update category. Please try again." };
   }
 
   revalidatePath("/Grace-admin/categories");
@@ -117,6 +142,12 @@ export async function updateCategory(id: string, formData: FormData) {
 }
 
 export async function deleteCategory(id: string) {
+  // ── Authorization ──────────────────────────────────────────────────────────
+  const admin = await requireAdmin();
+  if (!admin) return { error: "Unauthorized" };
+
+  if (!isValidUUID(id)) return { error: "Invalid category ID" };
+
   const supabase = await createServerClient();
 
   // Check if category has products
@@ -134,7 +165,7 @@ export async function deleteCategory(id: string) {
 
   if (error) {
     console.error("Delete category error:", error);
-    return { error: error.message };
+    return { error: "Failed to delete category. Please try again." };
   }
 
   revalidatePath("/Grace-admin/categories");
@@ -160,6 +191,8 @@ export async function getCategories() {
 }
 
 export async function getCategory(id: string) {
+  if (!isValidUUID(id)) return null;
+
   const supabase = await createServerClient();
 
   const { data, error } = await supabase

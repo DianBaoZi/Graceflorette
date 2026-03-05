@@ -3,6 +3,16 @@
 import { createServerClient } from "@/lib/supabase-server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAdmin } from "@/lib/actions/admin-guard";
+import {
+  sanitizeText,
+  sanitizeOptional,
+  isValidSlug,
+  isValidPrice,
+  isValidUUID,
+  isValidTag,
+  parseStringArray,
+} from "@/lib/validate";
 
 // Helper function to generate slug from name
 function generateSlug(name: string): string {
@@ -13,33 +23,42 @@ function generateSlug(name: string): string {
 }
 
 export async function createProduct(formData: FormData) {
-  const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const price = parseFloat(formData.get("price") as string);
-  const categoryId = formData.get("category_id") as string;
-  const images = JSON.parse(formData.get("images") as string || "[]");
+  // ── Authorization ──────────────────────────────────────────────────────────
+  const admin = await requireAdmin();
+  if (!admin) return { error: "Unauthorized" };
+
+  // ── Input extraction & sanitization ────────────────────────────────────────
+  const name = sanitizeText(formData.get("name"), 200);
+  const description = sanitizeOptional(formData.get("description"), 2000) || null;
+  const categoryId = sanitizeOptional(formData.get("category_id"), 36) || null;
   const isAvailable = formData.get("is_available") === "true";
   const isFeatured = formData.get("is_featured") === "true";
-  const tags = JSON.parse(formData.get("tags") as string || "[]");
 
-  let slug = formData.get("slug") as string;
+  const rawImages = parseStringArray(formData.get("images") as string);
+  const rawTags = parseStringArray(formData.get("tags") as string) ?? [];
 
-  // Auto-generate slug if not provided
-  if (!slug || slug.trim() === "") {
-    slug = generateSlug(name);
-  }
+  let slug = sanitizeOptional(formData.get("slug"), 200);
 
-  if (!name) {
-    return { error: "Product name is required" };
-  }
+  // ── Validation ──────────────────────────────────────────────────────────────
+  if (!name) return { error: "Product name is required" };
+  if (name.length > 200) return { error: "Product name is too long (max 200 characters)" };
 
-  if (!price || price <= 0) {
-    return { error: "Valid price is required" };
-  }
+  const priceRaw = formData.get("price");
+  if (!isValidPrice(priceRaw)) return { error: "Valid price is required (between $0.01 and $99,999)" };
+  const price = parseFloat(priceRaw as string);
 
-  if (!images || images.length === 0) {
-    return { error: "At least one product image is required" };
-  }
+  if (!rawImages || rawImages.length === 0) return { error: "At least one product image is required" };
+  if (rawImages.length > 10) return { error: "Maximum 10 images allowed" };
+
+  // Validate category ID if provided
+  if (categoryId && !isValidUUID(categoryId)) return { error: "Invalid category" };
+
+  // Validate tags
+  const tags = rawTags.filter(isValidTag);
+
+  // Auto-generate slug if not provided; then validate it
+  if (!slug) slug = generateSlug(name);
+  if (!isValidSlug(slug)) return { error: "Slug must be lowercase letters, numbers, and hyphens only" };
 
   const supabase = await createServerClient();
 
@@ -54,25 +73,23 @@ export async function createProduct(formData: FormData) {
     return { error: "A product with this name already exists. Please use a different name." };
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("products")
     .insert({
       name,
       slug,
-      description: description || null,
+      description,
       price,
       category_id: categoryId || null,
-      images,
+      images: rawImages,
       is_available: isAvailable,
       is_featured: isFeatured,
       tags,
-    })
-    .select()
-    .single();
+    });
 
   if (error) {
     console.error("Create product error:", error);
-    return { error: error.message };
+    return { error: "Failed to create product. Please try again." };
   }
 
   revalidatePath("/Grace-admin/products");
@@ -82,31 +99,39 @@ export async function createProduct(formData: FormData) {
 }
 
 export async function updateProduct(id: string, formData: FormData) {
-  const name = formData.get("name") as string;
-  const slug = formData.get("slug") as string;
-  const description = formData.get("description") as string;
-  const price = parseFloat(formData.get("price") as string);
-  const categoryId = formData.get("category_id") as string;
-  const images = JSON.parse(formData.get("images") as string || "[]");
+  // ── Authorization ──────────────────────────────────────────────────────────
+  const admin = await requireAdmin();
+  if (!admin) return { error: "Unauthorized" };
+
+  // ── Validate ID ─────────────────────────────────────────────────────────────
+  if (!isValidUUID(id)) return { error: "Invalid product ID" };
+
+  // ── Input extraction & sanitization ────────────────────────────────────────
+  const name = sanitizeText(formData.get("name"), 200);
+  const slug = sanitizeText(formData.get("slug"), 200);
+  const description = sanitizeOptional(formData.get("description"), 2000) || null;
+  const categoryId = sanitizeOptional(formData.get("category_id"), 36) || null;
   const isAvailable = formData.get("is_available") === "true";
   const isFeatured = formData.get("is_featured") === "true";
-  const tags = JSON.parse(formData.get("tags") as string || "[]");
 
-  if (!name) {
-    return { error: "Product name is required" };
-  }
+  const rawImages = parseStringArray(formData.get("images") as string);
+  const rawTags = parseStringArray(formData.get("tags") as string) ?? [];
 
-  if (!slug) {
-    return { error: "Product slug is required" };
-  }
+  // ── Validation ──────────────────────────────────────────────────────────────
+  if (!name) return { error: "Product name is required" };
+  if (!slug) return { error: "Product slug is required" };
+  if (!isValidSlug(slug)) return { error: "Slug must be lowercase letters, numbers, and hyphens only" };
 
-  if (!price || price <= 0) {
-    return { error: "Valid price is required" };
-  }
+  const priceRaw = formData.get("price");
+  if (!isValidPrice(priceRaw)) return { error: "Valid price is required (between $0.01 and $99,999)" };
+  const price = parseFloat(priceRaw as string);
 
-  if (!images || images.length === 0) {
-    return { error: "At least one product image is required" };
-  }
+  if (!rawImages || rawImages.length === 0) return { error: "At least one product image is required" };
+  if (rawImages.length > 10) return { error: "Maximum 10 images allowed" };
+
+  if (categoryId && !isValidUUID(categoryId)) return { error: "Invalid category" };
+
+  const tags = rawTags.filter(isValidTag);
 
   const supabase = await createServerClient();
 
@@ -122,26 +147,24 @@ export async function updateProduct(id: string, formData: FormData) {
     return { error: "A product with this name already exists. Please use a different name." };
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("products")
     .update({
       name,
       slug,
-      description: description || null,
+      description,
       price,
       category_id: categoryId || null,
-      images,
+      images: rawImages,
       is_available: isAvailable,
       is_featured: isFeatured,
       tags,
     })
-    .eq("id", id)
-    .select()
-    .single();
+    .eq("id", id);
 
   if (error) {
     console.error("Update product error:", error);
-    return { error: error.message };
+    return { error: "Failed to update product. Please try again." };
   }
 
   revalidatePath("/Grace-admin/products");
@@ -151,16 +174,21 @@ export async function updateProduct(id: string, formData: FormData) {
 }
 
 export async function deleteProduct(id: string) {
+  // ── Authorization ──────────────────────────────────────────────────────────
+  const admin = await requireAdmin();
+  if (!admin) return { error: "Unauthorized" };
+
+  if (!isValidUUID(id)) return { error: "Invalid product ID" };
+
   const supabase = await createServerClient();
 
   const { error } = await supabase.from("products").delete().eq("id", id);
 
   if (error) {
     console.error("Delete product error:", error);
-    return { error: error.message };
+    return { error: "Failed to delete product. Please try again." };
   }
 
-  revalidatePath("/Grace-admin/products");
   revalidatePath("/shop");
   revalidatePath("/");
   return { success: true };
@@ -183,6 +211,8 @@ export async function getProducts() {
 }
 
 export async function getProduct(id: string) {
+  if (!isValidUUID(id)) return null;
+
   const supabase = await createServerClient();
 
   const { data, error } = await supabase
@@ -200,9 +230,17 @@ export async function getProduct(id: string) {
 }
 
 export async function toggleTag(id: string, tag: string, currentTags: string[]) {
-  const newTags = currentTags.includes(tag)
-    ? currentTags.filter((t) => t !== tag)
-    : [...currentTags, tag];
+  // ── Authorization ──────────────────────────────────────────────────────────
+  const admin = await requireAdmin();
+  if (!admin) return { error: "Unauthorized" };
+
+  if (!isValidUUID(id)) return { error: "Invalid product ID" };
+  if (!isValidTag(tag)) return { error: "Invalid tag" };
+
+  const safeCurrent = currentTags.filter(isValidTag);
+  const newTags = safeCurrent.includes(tag)
+    ? safeCurrent.filter((t) => t !== tag)
+    : [...safeCurrent, tag];
 
   const supabase = await createServerClient();
 
@@ -216,12 +254,18 @@ export async function toggleTag(id: string, tag: string, currentTags: string[]) 
     return { error: error.message };
   }
 
-  revalidatePath("/Grace-admin/products");
   revalidatePath("/");
   return { success: true };
 }
 
 export async function toggleFeatured(id: string, isFeatured: boolean) {
+  // ── Authorization ──────────────────────────────────────────────────────────
+  const admin = await requireAdmin();
+  if (!admin) return { error: "Unauthorized" };
+
+  if (!isValidUUID(id)) return { error: "Invalid product ID" };
+  if (typeof isFeatured !== "boolean") return { error: "Invalid value" };
+
   const supabase = await createServerClient();
 
   const { error } = await supabase
@@ -234,12 +278,18 @@ export async function toggleFeatured(id: string, isFeatured: boolean) {
     return { error: error.message };
   }
 
-  revalidatePath("/Grace-admin/products");
   revalidatePath("/");
   return { success: true };
 }
 
 export async function toggleAvailable(id: string, isAvailable: boolean) {
+  // ── Authorization ──────────────────────────────────────────────────────────
+  const admin = await requireAdmin();
+  if (!admin) return { error: "Unauthorized" };
+
+  if (!isValidUUID(id)) return { error: "Invalid product ID" };
+  if (typeof isAvailable !== "boolean") return { error: "Invalid value" };
+
   const supabase = await createServerClient();
 
   const { error } = await supabase
@@ -252,7 +302,6 @@ export async function toggleAvailable(id: string, isAvailable: boolean) {
     return { error: error.message };
   }
 
-  revalidatePath("/Grace-admin/products");
   revalidatePath("/shop");
   return { success: true };
 }
