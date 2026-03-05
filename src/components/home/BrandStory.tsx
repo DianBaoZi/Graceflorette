@@ -71,7 +71,7 @@ export default function BrandStory() {
             <p className="editorial-spacing text-warm-gray-light mb-3">
               Our Story
             </p>
-            <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl text-dark mb-4">
+            <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-dark mb-4">
               How It All Began
             </h2>
             <div className="w-16 h-[1px] bg-primary-dark/40 mx-auto" />

@@ -20,8 +20,8 @@ const legalLinks = [
 export default function Footer() {
   return (
     <footer className="bg-dark text-cream/70">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
           {/* Brand column */}
           <div className="lg:col-span-1">
             <h3 className="font-heading text-xl text-cream mb-3">
@@ -110,7 +110,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-6 border-t border-cream/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="mt-8 sm:mt-10 pt-4 sm:pt-6 border-t border-cream/10 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
           <p className="text-xs text-cream/30">
             &copy; {new Date().getFullYear()} Grace&apos;s Florette. All rights
             reserved.

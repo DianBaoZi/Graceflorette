@@ -192,8 +192,8 @@ export default function Navbar() {
             : "bg-cream"
         }`}
       >
-        <nav className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="flex items-center justify-between h-18 sm:h-24 lg:h-32">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="flex items-center justify-between h-16 sm:h-20 lg:h-28">
             {/* Logo */}
             <Link
               href="/"
@@ -204,7 +204,7 @@ export default function Navbar() {
                 alt="Grace's Florette"
                 width={320}
                 height={320}
-                className="h-14 sm:h-20 lg:h-28 w-auto"
+                className="h-12 sm:h-16 lg:h-24 w-auto"
                 priority
               />
             </Link>
@@ -305,7 +305,7 @@ export default function Navbar() {
       </AnimatePresence>
 
       {/* Spacer for fixed navbar */}
-      <div className="h-18 sm:h-24 lg:h-32" />
+      <div className="h-16 sm:h-20 lg:h-28" />
     </>
   );
 }

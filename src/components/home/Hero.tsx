@@ -135,7 +135,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4 }}
-          className="font-heading text-5xl sm:text-6xl lg:text-7xl text-dark leading-[1.1] tracking-tight"
+          className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-dark leading-[1.15] tracking-tight px-4"
         >
           Flowers are
           <br />
@@ -155,7 +155,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-warm-gray text-base sm:text-lg leading-relaxed max-w-lg mx-auto"
+          className="text-warm-gray text-sm sm:text-base md:text-lg leading-relaxed max-w-lg mx-auto px-6"
         >
           Hand-crafted bouquets and arrangements made with love.
           <br className="hidden sm:block" />
@@ -167,11 +167,11 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.0 }}
-          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4"
         >
           <Link
             href="/shop"
-            className="group relative inline-flex items-center gap-2 bg-dark text-cream px-8 py-3.5 text-sm tracking-wider uppercase font-medium rounded-full hover:bg-dark/90 transition-all duration-300 overflow-hidden"
+            className="group relative inline-flex items-center gap-2 bg-dark text-cream px-6 sm:px-8 py-3 sm:py-3.5 text-xs sm:text-sm tracking-wider uppercase font-medium rounded-full hover:bg-dark/90 transition-all duration-300 overflow-hidden w-full sm:w-auto justify-center"
           >
             <span className="relative z-10">Send Flowers Today</span>
             <svg
@@ -203,7 +203,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.2 }}
-          className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs text-warm-gray-light"
+          className="mt-8 sm:mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-warm-gray-light px-4"
         >
           <div className="flex items-center gap-1.5">
             <span className="text-amber-500">★★★★★</span>
